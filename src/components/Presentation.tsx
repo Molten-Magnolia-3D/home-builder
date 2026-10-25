@@ -17,7 +17,7 @@ export function Presentation() {
 
   return (
     <div className="present">
-      <Canvas shadows camera={{ position: [52, 18, 38], fov: 40 }} gl={{ preserveDrawingBuffer: true }}>
+      <Canvas shadows camera={{ position: [58, 38, 50], fov: 38 }} gl={{ preserveDrawingBuffer: true }}>
         <color attach="background" args={['#1c1712']} />
         <fog attach="fog" args={['#1c1712', 40, 140]} />
         <hemisphereLight args={['#fff1d6', '#24301c', 0.7]} />
@@ -27,7 +27,7 @@ export function Presentation() {
           <planeGeometry args={[180, 180]} />
           <shadowMaterial opacity={0.35} />
         </mesh>
-        <Orbit autoRotate autoRotateSpeed={0.45} enablePan={false} targetY={4} targetZ={14} />
+        <Orbit autoRotate autoRotateSpeed={0.45} enablePan={false} targetY={8} targetZ={14} />
       </Canvas>
       <div className="present-top">
         <button className="btn" type="button" onClick={() => setScreen('studio')}>Back to studio</button>

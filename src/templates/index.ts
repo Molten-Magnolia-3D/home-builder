@@ -263,7 +263,7 @@ export function colonialTemplate(): Project {
       description: 'A two-story colonial with a formal dining room, working kitchen, and three bedrooms upstairs. Prepared as a realtor walkthrough model and a printable 1:100 house.',
       status: 'listed',
     }),
-    { style: 'gable', pitch: 0.5, overhang: 1.5, color: '#3d3a36' },
+    { style: 'gable', pitch: 0.62, overhang: 1.5, color: '#4a4640' },
   )
 }
 

@@ -47,8 +47,8 @@ function CameraRig() {
   const { camera } = useThree()
   useEffect(() => {
     if (!project) return
-    camera.position.set(46, 22, 40)
-    camera.lookAt(16, 4, 12)
+    camera.position.set(54, 42, 48)
+    camera.lookAt(16, 8, 14)
   }, [camera, project?.id])
   return null
 }
@@ -59,7 +59,7 @@ export function Viewport() {
       <div className="pane-label">3D home</div>
       <Canvas
         shadows
-        camera={{ position: [46, 22, 40], fov: 42 }}
+        camera={{ position: [54, 42, 48], fov: 40 }}
         gl={{ preserveDrawingBuffer: true, antialias: true }}
         onPointerMissed={() => useStore.getState().select({ kind: 'none' })}
       >
@@ -72,6 +72,7 @@ export function Viewport() {
           shadow-mapSize-width={2048}
           shadow-mapSize-height={2048}
         />
+        <directionalLight position={[-18, 28, -12]} intensity={0.45} />
         <HouseScene />
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[16, -0.22, 12]} receiveShadow>
           <planeGeometry args={[160, 160]} />

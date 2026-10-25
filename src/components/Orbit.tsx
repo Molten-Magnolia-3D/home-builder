@@ -7,8 +7,8 @@ export function Orbit({
   autoRotateSpeed = 0.4,
   enablePan = true,
   targetX = 16,
-  targetY = 3,
-  targetZ = 12,
+  targetY = 8,
+  targetZ = 14,
 }: {
   autoRotate?: boolean
   autoRotateSpeed?: number
@@ -24,8 +24,8 @@ export function Orbit({
     controls.dampingFactor = 0.08
     controls.maxPolarAngle = Math.PI / 2.08
     controls.minPolarAngle = 0.18
-    controls.minDistance = 12
-    controls.maxDistance = 120
+    controls.minDistance = 20
+    controls.maxDistance = 160
     controls.enablePan = enablePan
     controls.autoRotate = autoRotate
     controls.autoRotateSpeed = autoRotateSpeed
