@@ -3,6 +3,23 @@ import type { Roof, Vec2 } from '../types'
 import { boundsOf } from '../geometry/math'
 import { mats } from './materials'
 
+function plane(points: THREE.Vector3[], material: THREE.Material): THREE.Mesh {
+  const geom = new THREE.BufferGeometry()
+  const verts: number[] = []
+  for (const p of points) verts.push(p.x, p.y, p.z)
+  geom.setAttribute('position', new THREE.Float32BufferAttribute(verts, 3))
+  const index: number[] = []
+  for (let i = 1; i < points.length - 1; i += 1) {
+    index.push(0, i, i + 1)
+  }
+  geom.setIndex(index)
+  geom.computeVertexNormals()
+  const mesh = new THREE.Mesh(geom, material)
+  mesh.castShadow = true
+  mesh.receiveShadow = true
+  return mesh
+}
+
 export function createRoofMesh(footprint: Vec2[], roof: Roof, elevation: number): THREE.Group {
   const group = new THREE.Group()
   if (footprint.length < 3) return group
@@ -17,88 +34,64 @@ export function createRoofMesh(footprint: Vec2[], roof: Roof, elevation: number)
   const d = maxZ - minZ
   const cx = (minX + maxX) / 2
   const cz = (minZ + maxZ) / 2
-  const rise = Math.max(w, d) * roof.pitch * 0.5
+  const rise = Math.max(w, d) * roof.pitch * 0.55
   const material = mats.paint(roof.color)
-  const soffit = mats.paint('#e8dcc8')
+  material.side = THREE.DoubleSide
+  const y0 = elevation
+  const y1 = y0 + (roof.style === 'shed' ? rise * 1.25 : rise)
+  const V = (x: number, y: number, z: number) => new THREE.Vector3(x, y, z)
 
   if (roof.style === 'flat') {
     const slab = new THREE.Mesh(new THREE.BoxGeometry(w, 0.35, d), material)
-    slab.position.set(cx, elevation + 0.18, cz)
+    slab.position.set(cx, y0 + 0.18, cz)
     slab.castShadow = true
     group.add(slab)
-    const parapet = new THREE.Mesh(new THREE.BoxGeometry(w, 1.1, 0.25), material)
-    parapet.position.set(cx, elevation + 0.7, minZ)
-    group.add(parapet)
-    const p2 = parapet.clone()
-    p2.position.z = maxZ
-    group.add(p2)
+    return group
+  }
+
+  if (roof.style === 'shed') {
+    group.add(plane([V(minX, y0, minZ), V(maxX, y0, minZ), V(maxX, y1, maxZ), V(minX, y1, maxZ)], material))
     return group
   }
 
   const alongX = w >= d
-  const geom = new THREE.BufferGeometry()
-  const y0 = elevation
-  const y1 = elevation + (roof.style === 'shed' ? rise * 1.4 : rise)
-
-  let vertices: number[] = []
-  if (roof.style === 'shed') {
-    vertices = [
-      minX, y0, minZ, maxX, y0, minZ, maxX, y1, maxZ, minX, y1, maxZ,
-    ]
-    geom.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3))
-    geom.setIndex([0, 1, 2, 0, 2, 3])
-  } else if (roof.style === 'gable' || roof.style === 'gambrel') {
-    if (alongX) {
-      const ridgeZ = cz
-      const mid = roof.style === 'gambrel' ? y0 + rise * 0.45 : y1
-      vertices = [
-        minX, y0, minZ, maxX, y0, minZ, maxX, y1, ridgeZ, minX, y1, ridgeZ,
-        minX, y0, maxZ, maxX, y0, maxZ, maxX, y1, ridgeZ, minX, y1, ridgeZ,
-      ]
-      if (roof.style === 'gambrel') {
-        vertices = [
-          minX, y0, minZ, maxX, y0, minZ, maxX, mid, minZ + d * 0.22, minX, mid, minZ + d * 0.22,
-          minX, mid, minZ + d * 0.22, maxX, mid, minZ + d * 0.22, maxX, y1, ridgeZ, minX, y1, ridgeZ,
-          minX, y0, maxZ, maxX, y0, maxZ, maxX, mid, maxZ - d * 0.22, minX, mid, maxZ - d * 0.22,
-          minX, mid, maxZ - d * 0.22, maxX, mid, maxZ - d * 0.22, maxX, y1, ridgeZ, minX, y1, ridgeZ,
-        ]
-        geom.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3))
-        geom.setIndex([0, 1, 2, 0, 2, 3, 4, 5, 6, 4, 6, 7, 8, 10, 9, 8, 11, 10, 12, 14, 13, 12, 15, 14])
-      } else {
-        geom.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3))
-        geom.setIndex([0, 1, 2, 0, 2, 3, 4, 6, 5, 4, 7, 6])
-      }
-    } else {
-      vertices = [
-        minX, y0, minZ, minX, y0, maxZ, cx, y1, maxZ, cx, y1, minZ,
-        maxX, y0, minZ, maxX, y0, maxZ, cx, y1, maxZ, cx, y1, minZ,
-      ]
-      geom.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3))
-      geom.setIndex([0, 1, 2, 0, 2, 3, 4, 6, 5, 4, 7, 6])
-    }
-  } else {
+  if (roof.style === 'hip') {
     const inset = Math.min(w, d) * 0.28
-    const ridgeMinX = minX + inset
-    const ridgeMaxX = maxX - inset
-    const ridgeZ = cz
-    vertices = [
-      minX, y0, minZ, maxX, y0, minZ, ridgeMaxX, y1, ridgeZ, ridgeMinX, y1, ridgeZ,
-      maxX, y0, minZ, maxX, y0, maxZ, ridgeMaxX, y1, ridgeZ,
-      maxX, y0, maxZ, minX, y0, maxZ, ridgeMinX, y1, ridgeZ, ridgeMaxX, y1, ridgeZ,
-      minX, y0, maxZ, minX, y0, minZ, ridgeMinX, y1, ridgeZ,
-    ]
-    geom.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3))
-    geom.setIndex([0, 1, 2, 0, 2, 3, 4, 5, 6, 7, 8, 9, 7, 9, 10, 11, 12, 13])
+    const r0 = V(minX + inset, y1, cz)
+    const r1 = V(maxX - inset, y1, cz)
+    group.add(plane([V(minX, y0, minZ), V(maxX, y0, minZ), r1, r0], material))
+    group.add(plane([V(maxX, y0, minZ), V(maxX, y0, maxZ), r1], material))
+    group.add(plane([V(maxX, y0, maxZ), V(minX, y0, maxZ), r0, r1], material))
+    group.add(plane([V(minX, y0, maxZ), V(minX, y0, minZ), r0], material))
+    return group
   }
 
-  geom.computeVertexNormals()
-  const mesh = new THREE.Mesh(geom, material)
-  mesh.castShadow = true
-  mesh.receiveShadow = true
-  group.add(mesh)
+  if (roof.style === 'gambrel') {
+    if (alongX) {
+      const mid = y0 + rise * 0.42
+      const z1 = minZ + d * 0.22
+      const z2 = maxZ - d * 0.22
+      group.add(plane([V(minX, y0, minZ), V(maxX, y0, minZ), V(maxX, mid, z1), V(minX, mid, z1)], material))
+      group.add(plane([V(minX, mid, z1), V(maxX, mid, z1), V(maxX, y1, cz), V(minX, y1, cz)], material))
+      group.add(plane([V(minX, y0, maxZ), V(minX, mid, z2), V(maxX, mid, z2), V(maxX, y0, maxZ)], material))
+      group.add(plane([V(minX, mid, z2), V(minX, y1, cz), V(maxX, y1, cz), V(maxX, mid, z2)], material))
+    } else {
+      group.add(plane([V(minX, y0, minZ), V(minX, y0, maxZ), V(cx, y1, maxZ), V(cx, y1, minZ)], material))
+      group.add(plane([V(maxX, y0, minZ), V(cx, y1, minZ), V(cx, y1, maxZ), V(maxX, y0, maxZ)], material))
+    }
+    return group
+  }
 
-  const fascia = new THREE.Mesh(new THREE.BoxGeometry(w, 0.22, d), soffit)
-  fascia.position.set(cx, elevation - 0.05, cz)
-  group.add(fascia)
+  if (alongX) {
+    group.add(plane([V(minX, y0, minZ), V(maxX, y0, minZ), V(maxX, y1, cz), V(minX, y1, cz)], material))
+    group.add(plane([V(minX, y0, maxZ), V(minX, y1, cz), V(maxX, y1, cz), V(maxX, y0, maxZ)], material))
+    const gable = mats.paint('#efe8dc')
+    gable.side = THREE.DoubleSide
+    group.add(plane([V(minX, y0, minZ), V(minX, y1, cz), V(minX, y0, maxZ)], gable))
+    group.add(plane([V(maxX, y0, minZ), V(maxX, y0, maxZ), V(maxX, y1, cz)], gable))
+  } else {
+    group.add(plane([V(minX, y0, minZ), V(minX, y0, maxZ), V(cx, y1, maxZ), V(cx, y1, minZ)], material))
+    group.add(plane([V(maxX, y0, minZ), V(cx, y1, minZ), V(cx, y1, maxZ), V(maxX, y0, maxZ)], material))
+  }
   return group
 }

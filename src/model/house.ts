@@ -102,7 +102,7 @@ function createOpeningDress(opening: Opening, story: Story): THREE.Group {
     frame.position.set(0, opening.sill + opening.height / 2, 0)
     group.add(frame)
     const glass = new THREE.Mesh(
-      new THREE.BoxGeometry(opening.width - 0.16, opening.height - 0.16, 0.06),
+      new THREE.BoxGeometry(opening.width - 0.2, opening.height - 0.2, wall.thickness + 0.04),
       mats.glass(),
     )
     glass.position.copy(frame.position)

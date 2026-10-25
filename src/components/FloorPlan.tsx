@@ -127,15 +127,26 @@ export function FloorPlan() {
         for (const opening of story.openings) {
           const wall = story.walls.find((w) => w.id === opening.wallId)
           if (!wall) continue
-          const center = offsetAlongWall(wall, opening.offset)
+          const length = wallLength(wall)
+          if (length < 0.1) continue
+          const start = offsetAlongWall(wall, opening.offset - opening.width / 2)
+          const end = offsetAlongWall(wall, opening.offset + opening.width / 2)
           const selected = state.selection.kind === 'opening' && state.selection.id === opening.id
           ctx.beginPath()
-          ctx.arc(center.x, center.y, opening.width / 2, 0, Math.PI * 2)
-          ctx.fillStyle = opening.kind === 'window' ? '#9ec5d6' : opening.kind === 'door' ? '#c4a056' : '#efe8dc'
-          ctx.fill()
-          ctx.lineWidth = 0.08
-          ctx.strokeStyle = selected ? '#8c6d2e' : '#1c1712'
+          ctx.moveTo(start.x, start.y)
+          ctx.lineTo(end.x, end.y)
+          ctx.strokeStyle = selected ? '#c4a056' : opening.kind === 'window' ? '#5f8fa3' : '#c4a056'
+          ctx.lineWidth = opening.kind === 'window' ? 0.28 : 0.18
+          ctx.lineCap = 'butt'
           ctx.stroke()
+          if (opening.kind === 'door') {
+            const center = offsetAlongWall(wall, opening.offset)
+            ctx.beginPath()
+            ctx.arc(center.x, center.y, opening.width * 0.45, 0, Math.PI * 0.6)
+            ctx.strokeStyle = 'rgba(196,160,86,0.7)'
+            ctx.lineWidth = 0.06
+            ctx.stroke()
+          }
         }
 
         for (const stair of story.stairs) {

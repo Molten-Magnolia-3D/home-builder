@@ -22,7 +22,10 @@ export function Orbit({
     const controls = new OrbitControls(camera, gl.domElement)
     controls.enableDamping = true
     controls.dampingFactor = 0.08
-    controls.maxPolarAngle = Math.PI / 2.05
+    controls.maxPolarAngle = Math.PI / 2.08
+    controls.minPolarAngle = 0.18
+    controls.minDistance = 12
+    controls.maxDistance = 120
     controls.enablePan = enablePan
     controls.autoRotate = autoRotate
     controls.autoRotateSpeed = autoRotateSpeed

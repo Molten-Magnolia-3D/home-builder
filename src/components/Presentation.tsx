@@ -17,7 +17,7 @@ export function Presentation() {
 
   return (
     <div className="present">
-      <Canvas shadows camera={{ position: [56, 28, 42], fov: 40 }} gl={{ preserveDrawingBuffer: true }}>
+      <Canvas shadows camera={{ position: [52, 18, 38], fov: 40 }} gl={{ preserveDrawingBuffer: true }}>
         <color attach="background" args={['#1c1712']} />
         <fog attach="fog" args={['#1c1712', 40, 140]} />
         <hemisphereLight args={['#fff1d6', '#24301c', 0.7]} />

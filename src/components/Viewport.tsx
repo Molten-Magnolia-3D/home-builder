@@ -47,7 +47,7 @@ function CameraRig() {
   const { camera } = useThree()
   useEffect(() => {
     if (!project) return
-    camera.position.set(48, 36, 48)
+    camera.position.set(46, 22, 40)
     camera.lookAt(16, 4, 12)
   }, [camera, project?.id])
   return null
@@ -59,7 +59,7 @@ export function Viewport() {
       <div className="pane-label">3D home</div>
       <Canvas
         shadows
-        camera={{ position: [48, 36, 48], fov: 42 }}
+        camera={{ position: [46, 22, 40], fov: 42 }}
         gl={{ preserveDrawingBuffer: true, antialias: true }}
         onPointerMissed={() => useStore.getState().select({ kind: 'none' })}
       >
