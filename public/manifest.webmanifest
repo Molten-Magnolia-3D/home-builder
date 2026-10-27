@@ -1,0 +1,19 @@
+{
+  "name": "Home Builder — Molten Magnolia 3D",
+  "short_name": "Home Builder",
+  "description": "Turn floor planes into listing-ready 3D homes and printable scale models.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f6f0e6",
+  "theme_color": "#1c1712",
+  "icons": [
+    {
+      "src": "./favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

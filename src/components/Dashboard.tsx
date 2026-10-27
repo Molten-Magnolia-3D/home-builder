@@ -18,6 +18,11 @@ export function Dashboard() {
           Draw walls on each story, dress the rooms from the catalog, then hand a realtor a
           listing-ready 3D walkthrough — or send the same house to a printer as a scale model.
         </p>
+        <div className="release-actions">
+          <button className="btn primary" type="button" onClick={() => useStore.getState().setScreen('releases')}>
+            Releases & downloads
+          </button>
+        </div>
       </div>
 
       <div className="section-head">

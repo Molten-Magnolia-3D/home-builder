@@ -53,3 +53,13 @@ The library is procedural on purpose. Pieces are chunky, painted, and print-frie
 ## Stack
 
 Vite, React, TypeScript, Three.js, React Three Fiber, Zustand. Projects persist in `localStorage` under `molten-magnolia-home-builder`.
+
+## Releases, install, and auto-update
+
+Open **Releases** in the app for version history.
+
+- **Install on this device** — Chrome / Edge on a computer, or Add to Home Screen on a phone. The studio runs as its own app.
+- **Download for desktop** — `home-builder-web.zip` from the release. Unpack and host, or open after a local `npm run build`.
+- **Auto-update** — a push to `main` builds the app, publishes GitHub Pages, and refreshes the release zip. Every installed copy checks `version.json` and reloads itself. Saved listings stay on the device.
+
+GitHub Pages must be set to **GitHub Actions** once: Settings → Pages → Build and deployment → GitHub Actions. After that, each push updates phones, desktops, and the download in one go.

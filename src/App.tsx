@@ -1,17 +1,22 @@
 import { Dashboard } from './components/Dashboard'
 import { Presentation } from './components/Presentation'
+import { Releases } from './components/Releases'
 import { Studio } from './components/Studio'
+import { UpdateToast } from './components/UpdateToast'
 import { useStore } from './store'
+import { APP_VERSION } from './version'
 
 export default function App() {
   const screen = useStore((s) => s.screen)
   const closeStudio = useStore((s) => s.closeStudio)
   const saveCurrent = useStore((s) => s.saveCurrent)
+  const setScreen = useStore((s) => s.setScreen)
   const undo = useStore((s) => s.undo)
   const redo = useStore((s) => s.redo)
 
   return (
     <div className="app">
+      <UpdateToast />
       <header className="topbar">
         <button className="brand" type="button" onClick={closeStudio} style={{ border: 0, background: 'transparent', padding: 0 }}>
           <span className="mark">M</span>
@@ -30,10 +35,23 @@ export default function App() {
           )}
         </div>
         <div className="top-actions">
+          {screen !== 'studio' && screen !== 'present' && (
+            <>
+              <button
+                className={`btn ${screen === 'releases' ? 'primary' : 'ghost'}`}
+                type="button"
+                onClick={() => setScreen('releases')}
+              >
+                Releases
+              </button>
+              <span className="version-pill">v{APP_VERSION}</span>
+            </>
+          )}
           {screen === 'dashboard' && <span className="empty" style={{ margin: 0 }}>Desk models · listing walkthroughs</span>}
         </div>
       </header>
       {screen === 'dashboard' && <Dashboard />}
+      {screen === 'releases' && <Releases />}
       {screen === 'studio' && <Studio />}
       {screen === 'present' && <Presentation />}
     </div>

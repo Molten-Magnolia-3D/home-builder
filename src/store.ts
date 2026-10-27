@@ -16,7 +16,7 @@ import type {
   ViewMode,
 } from './types'
 
-type Screen = 'dashboard' | 'studio' | 'present'
+type Screen = 'dashboard' | 'studio' | 'present' | 'releases'
 
 type History = { past: Project[]; future: Project[] }
 

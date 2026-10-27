@@ -1,0 +1,25 @@
+{
+  "latest": "0.2.0",
+  "releases": [
+    {
+      "version": "0.2.0",
+      "date": "2026-10-27",
+      "title": "Install, releases, and live updates",
+      "notes": [
+        "Releases page with version history and desktop / phone downloads",
+        "Install Home Builder on a computer or phone as an app",
+        "Published builds apply themselves — listings on the device stay put"
+      ]
+    },
+    {
+      "version": "0.1.0",
+      "date": "2026-10-25",
+      "title": "First studio",
+      "notes": [
+        "Floor-plane editor with walls, doors, windows, stairs, and multi-story homes",
+        "Catalog of furniture, kitchen, bath, decor, structure, and lot pieces",
+        "Listing presentation plus STL / GLB / OBJ export for print and walkthroughs"
+      ]
+    }
+  ]
+}
