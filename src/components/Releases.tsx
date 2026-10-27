@@ -19,7 +19,10 @@ function packageUrl(version?: string): string {
   if (version) {
     return `https://github.com/${RELEASES_REPO}/releases/download/v${version}/${file}`
   }
-  return new URL('home-builder-web.zip', document.baseURI).href
+  if (import.meta.env.DEV) {
+    return `https://github.com/${RELEASES_REPO}/releases/latest/download/${file}`
+  }
+  return new URL(file, document.baseURI).href
 }
 
 function githubReleaseUrl(version: string): string {
